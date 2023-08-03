@@ -1,0 +1,23 @@
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        char c = 'A';
+        int i = 14;
+        byte b = 4;
+        short s = 17;
+        double d = 4.987653456;
+        float f = 4.7456789f;
+        long l = 4567123;
+
+        System.out.println("char: " + c);
+        System.out.println("integer: " + i);
+        System.out.println("byte: " + b);
+        System.out.println("short: " + s);
+        System.out.println("float: " + f);
+        System.out.println("double: " + d);
+        System.out.println("long: " + l);
+
+    }
+}

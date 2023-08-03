@@ -1,0 +1,73 @@
+import java.util.Scanner;
+import java.util.ArrayList;
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        ArrayList<String> groceryList = new ArrayList<>();
+
+        System.out.println("1. Add item to the grocery list");
+        System.out.println("2. Remove item from the grocery list");
+        System.out.println("3. Print the current grocery list");
+        System.out.println("4. Check if a specific item is on the grocery list");
+        System.out.println("5. Clear the entire grocery list");
+        System.out.println("Enter your choice: ");
+
+        int choice = sc.nextInt();
+        sc.nextLine();
+
+        switch (choice) {
+            case 1:
+                System.out.print("Enter the item to add: ");
+                String itemToAdd = sc.nextLine();
+                groceryList.add(itemToAdd);
+                System.out.println(itemToAdd + " added to the grocery list.");
+                break;
+
+            case 2:
+                System.out.print("Enter the item to remove: ");
+                String itemToRemove = sc.nextLine();
+                if (groceryList.remove(itemToRemove)) {
+                    System.out.println(itemToRemove + " removed from the grocery list.");
+                } else {
+                    System.out.println(itemToRemove + " is not in the grocery list.");
+                }
+                break;
+
+            case 3:
+                if (groceryList.isEmpty()) {
+                    System.out.println("Grocery list is empty.");
+                } else {
+                    System.out.println("Current grocery list:");
+                    for (String item : groceryList) {
+                        System.out.println(item);
+                    }
+                }
+                break;
+
+            case 4:
+                System.out.print("Enter the item to check: ");
+                String itemToCheck = sc.nextLine();
+                if (groceryList.contains(itemToCheck)) {
+                    System.out.println(itemToCheck + " is in the grocery list.");
+                } else {
+                    System.out.println(itemToCheck + " is not in the grocery list.");
+                }
+                break;
+
+            case 5:
+                groceryList.clear();
+                System.out.println("Grocery list cleared.");
+                break;
+
+            default:
+                System.out.println("Invalid choice. Please select a valid option (1-6).");
+                break;
+
+        }
+    }
+
+}
+

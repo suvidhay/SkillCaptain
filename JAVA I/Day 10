@@ -1,0 +1,31 @@
+import java.util.Scanner;
+import java.util.HashSet;
+import java.util.Set;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Enter a series of numbers: ");
+        String input = sc.nextLine();
+
+        String[] a = input.split("\s+");
+        Set res = new HashSet<>();
+
+        for (String numberString : a) {
+
+            int number = Integer.parseInt(numberString);
+
+            if (res.contains(number)) {
+                System.out.println(number + " " + "Duplicate ");
+            }
+
+            else{
+                res.add(number);
+                System.out.println(number + " " + "Unique ");
+            }
+
+        }
+    }
+}
