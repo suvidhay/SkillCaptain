@@ -1,0 +1,56 @@
+import java.util.Scanner;
+class BankAccount {
+
+    private String AccountNumber;
+    private String AccountHolderName;
+    private double AccountBalance;
+
+    public BankAccount(String AccountNumber, String AccountHolderName, double InitialBalance) {
+
+        this.AccountNumber = AccountNumber;
+        this.AccountHolderName = AccountHolderName;
+        this.AccountBalance = InitialBalance;
+    }
+
+    public void deposit(double amount) {
+
+        if (amount > 0) {
+            AccountBalance += amount;
+            System.out.println("Balance: " + AccountBalance);
+        }
+
+        else {
+            System.out.println("Invalid");
+        }
+    }
+
+    public void withdraw(double amount) {
+        if (amount > 0 && amount <= AccountBalance) {
+            AccountBalance -= amount;
+
+            System.out.println("New balance: " + AccountBalance);
+        } else {
+            System.out.println("Invalid amount for withdrawal.");
+        }
+    }
+
+    public void displayAccountInfo() {
+        System.out.println("Account Number: " + AccountNumber);
+        System.out.println("Account Holder: " + AccountHolderName);
+        System.out.println("Account Balance: " + AccountBalance);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+
+        BankAccount account = new BankAccount("123456789", "Suvidha Yadav", 15000);
+
+        account.displayAccountInfo();
+
+        account.deposit(600);
+        account.withdraw(300);
+
+        account.displayAccountInfo();
+    }
+}
