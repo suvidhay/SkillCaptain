@@ -1,0 +1,64 @@
+import java.math.BigInteger;
+import java.util.Scanner;
+import java.util.concurrent.*;
+
+class FactorialCalculator implements Callable<BigInteger> {
+    private int num;
+
+    public FactorialCalculator(int num) {
+        this.num = num;
+    }
+
+    public BigInteger call() {
+        BigInteger result = calculateFactorial(num);
+        return result;
+    }
+
+    private BigInteger calculateFactorial(int n) {
+        BigInteger factorial = BigInteger.ONE;
+
+        for (int i = 2; i <= n; i++) {
+            factorial = factorial.multiply(BigInteger.valueOf(i));
+        }
+        
+        return factorial;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter a number: ");
+        int num = scanner.nextInt();
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+        FactorialCalculator calculator = new FactorialCalculator(num);
+        Future<BigInteger> futureResult = executorService.submit(calculator);
+
+
+        while (!futureResult.isDone()) {
+            System.out.println("Calculating");
+
+            try {
+                Thread.sleep(1000);
+            } 
+            
+            catch (InterruptedException e) {
+            }
+        }
+
+
+        try {
+
+            BigInteger result = futureResult.get();
+            System.out.println("The factorial of " + num + " is: " + result);
+        }
+        
+         catch (InterruptedException | ExecutionException e) {
+            System.out.println("An error occurred during calculation: " + e.getMessage());
+        }
+
+        executorService.shutdown();
+    }
+}

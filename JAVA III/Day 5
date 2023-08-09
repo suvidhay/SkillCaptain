@@ -1,0 +1,75 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.concurrent.CompletableFuture;
+
+class FileProcessor {
+    public CompletableFuture<FileSummary> processFile(String filePath) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                Path path = Path.of(filePath);
+                long lineCount = Files.lines(path).count();
+                long wordCount = Files.lines(path)
+                        .flatMap(line -> java.util.Arrays.stream(line.split("\\s+")))
+                        .filter(word -> !word.isEmpty())
+                        .count();
+                return new FileSummary(filePath, wordCount, lineCount);
+            } catch (IOException e) {
+                throw new RuntimeException("Error processing file: " + filePath, e);
+            }
+        });
+    }
+}
+
+class FileSummary {
+    private final String filePath;
+    private final long wordCount;
+    private final long lineCount;
+
+    public FileSummary(String filePath, long wordCount, long lineCount) {
+        this.filePath = filePath;
+        this.wordCount = wordCount;
+        this.lineCount = lineCount;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public long getWordCount() {
+        return wordCount;
+    }
+
+    public long getLineCount() {
+        return lineCount;
+    }
+
+    public String toString() {
+        return String.format("- File: %s\n  Word Count: %d\n  Line Count: %d\n", filePath, wordCount, lineCount);
+    }
+}
+
+public class Main {
+    public void processFiles(String[] filePaths) {
+        FileProcessor fileProcessor = new FileProcessor();
+
+        CompletableFuture<Void>[] tasks = new CompletableFuture[filePaths.length];
+        for (int i = 0; i < filePaths.length; i++) {
+            String filePath = filePaths[i];
+            tasks[i] = fileProcessor.processFile(filePath)
+                    .thenAccept(fileSummary -> {
+                        System.out.println(fileSummary);
+                    });
+        }
+
+        CompletableFuture<Void> allOf = CompletableFuture.allOf(tasks);
+        allOf.join();
+        
+    }
+
+    public static void main(String[] args) {
+        String[] filePaths = {"/Users/akashyadav/Desktop/no of words/t1 4", "/Users/akashyadav/Desktop/no of words/t1 10"};
+        Main fileApp = new Main();
+        fileApp.processFiles(filePaths);
+    }
+}

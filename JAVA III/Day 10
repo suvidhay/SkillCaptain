@@ -1,0 +1,59 @@
+class Logger {
+
+    private static Logger instance;
+
+    private Logger() {
+    }
+
+    public static synchronized Logger getInstance() {
+        if (instance == null) {
+            instance = new Logger();
+        }
+        return instance;
+    }
+
+    public synchronized void log(String message) {
+        System.out.println(message);
+    }
+}
+
+class LogWriterThread extends Thread {
+    private final int threadId;
+
+    public LogWriterThread(int threadId) {
+        this.threadId = threadId;
+    }
+
+
+    public void run() {
+
+        Logger logger = Logger.getInstance();
+        logger.log("Thread " + threadId + " is writing.");
+
+    }
+}
+
+public class Main {
+
+    public static void main(String[] args) {
+
+        int numThreads = 5;
+        Thread[] threads = new Thread[numThreads];
+
+        for (int i = 0; i < numThreads; i++) {
+            threads[i] = new LogWriterThread(i + 1);
+            threads[i].start();
+
+        }
+
+        for (Thread thread : threads) {
+            
+            try {
+                thread.join();
+            } 
+            catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

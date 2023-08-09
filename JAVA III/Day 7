@@ -1,0 +1,80 @@
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+class Theater {
+    private final int totalSeats;
+    private boolean[] seats;
+    private Lock lock = new ReentrantLock();
+
+    public Theater(int totalSeats) {
+        this.totalSeats = totalSeats;
+        seats = new boolean[totalSeats];
+        for (int i = 0; i < totalSeats; i++) {
+            seats[i] = true;
+        }
+    }
+
+    public int getTotalSeats() {
+        return totalSeats;
+    }
+
+    public boolean reserveSeat(int seatNumber) {
+        lock.lock();
+        try {
+            if (seatNumber < 0 || seatNumber >= totalSeats) {
+                return false;
+            }
+
+            if (seats[seatNumber]) {
+                seats[seatNumber] = false;
+                return true;
+            } else {
+                return false;
+            }
+        } finally {
+            lock.unlock();
+        }
+    }
+}
+
+class UserThread extends Thread {
+    private final Theater theater;
+    private final int seatNumber;
+
+    public UserThread(Theater theater, int seatNumber) {
+        this.theater = theater;
+        this.seatNumber = seatNumber;
+    }
+
+    @Override
+    public void run() {
+        boolean reserved = theater.reserveSeat(seatNumber);
+        if (reserved) {
+            System.out.println("User reserved seat " + seatNumber);
+        } else {
+            System.out.println("Seat " + seatNumber + " is already reserved. Choose another seat.");
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        int totalSeats = 10;
+        Theater theater = new Theater(totalSeats);
+
+        UserThread[] users = new UserThread[totalSeats];
+
+        for (int i = 0; i < totalSeats; i++) {
+            users[i] = new UserThread(theater, i);
+            users[i].start();
+        }
+
+        for (UserThread user : users) {
+            try {
+                user.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}

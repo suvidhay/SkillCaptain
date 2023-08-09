@@ -1,0 +1,69 @@
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
+class ShoppingCart {
+    private final List<String> items = new CopyOnWriteArrayList<>();
+
+    public void addItem(String item) {
+        items.add(item);
+    }
+
+    public void removeItem(String item) {
+        items.remove(item);
+    }
+
+    public List<String> getItems() {
+        return items;
+    }
+}
+
+class CustomerThread extends Thread {
+    private final String customerName;
+    private final ShoppingCart shoppingCart;
+
+    public CustomerThread(String customerName, ShoppingCart shoppingCart) {
+
+        this.customerName = customerName;
+        this.shoppingCart = shoppingCart;
+    }
+
+
+    public void run() {
+        shoppingCart.addItem(customerName + " ");
+        System.out.println(customerName + " added an item ");
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        shoppingCart.removeItem(customerName + " ");
+        System.out.println(customerName + " removed an item.");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        int numCustomers = 3;
+
+        ShoppingCart shoppingCart = new ShoppingCart();
+        Thread[] customerThreads = new Thread[numCustomers];
+
+        for (int i = 0; i < numCustomers; i++) {
+            customerThreads[i] = new CustomerThread("Customer " + (i + 1), shoppingCart);
+            customerThreads[i].start();
+        }
+
+        for (Thread thread : customerThreads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        List<String> finalItems = shoppingCart.getItems();
+        System.out.println("Items in the cart: " + finalItems);
+    }
+}

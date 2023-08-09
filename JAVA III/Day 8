@@ -1,0 +1,61 @@
+import java.util.HashMap;
+import java.util.Map;
+
+class UserSession {
+    private final Map<String, String> sessionData = new HashMap<>();
+
+    public void setSessionData(String key, String value) {
+        sessionData.put(key, value);
+    }
+
+    public String getSessionData(String key) {
+        return sessionData.get(key);
+    }
+}
+
+class UserThread extends Thread {
+    private static final ThreadLocal<UserSession> userSessionThreadLocal = ThreadLocal.withInitial(UserSession::new);
+
+    private final String threadName;
+    private final String key;
+    private final String value;
+
+    public UserThread(String threadName, String key, String value) {
+        this.threadName = threadName;
+        this.key = key;
+        this.value = value;
+    }
+
+    
+    public void run() {
+        UserSession userSession = userSessionThreadLocal.get();
+        
+        userSession.setSessionData(key, value);
+
+        System.out.println(threadName + " - Session data for key '" + key + "': " + userSession.getSessionData(key));
+
+        userSessionThreadLocal.remove();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        String[] keys = {"username", "role", "cart"};
+        String[] values = {" Suvidha ", "user", "item1,item2,item3,item4,item5"};
+
+        UserThread[] threads = new UserThread[keys.length];
+
+        for (int i = 0; i < keys.length; i++) {
+            threads[i] = new UserThread("Thread-" + (i + 1), keys[i], values[i]);
+            threads[i].start();
+        }
+
+        for (UserThread thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
