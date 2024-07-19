@@ -1,0 +1,43 @@
+1.
+
+function saveToLocalStorage(preferences) {
+    const preferencesString = JSON.stringify(preferences);
+
+    localStorage.setItem('userPreferences', preferencesString);
+  
+}
+
+const userPreferences = {
+    theme: 'Blue',       
+    language: 'english'       
+};
+
+saveToLocalStorage(userPreferences);
+
+
+
+
+
+2.
+
+function loadFromSessionStorage(key) {
+    const data = sessionStorage.getItem(key);
+
+    if (data) {
+        try {
+            return JSON.parse(data);
+        } catch (e) {
+            console.error('Error parsing JSON from sessionStorage:', e);
+            return null;
+        }
+    } else {
+        return null;
+    }
+}
+
+const cartItems = loadFromSessionStorage('cartItems');
+if (cartItems) {
+    console.log('Cart items:', cartItems);
+} else {
+    console.log('No cart items found.');
+}
