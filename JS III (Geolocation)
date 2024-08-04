@@ -1,0 +1,80 @@
+JS:
+
+document.addEventListener('DOMContentLoaded', () => {
+  const mapElement = document.getElementById('map');
+  const coordinatesElement = document.getElementById('coordinates');
+  
+  if ('geolocation' in navigator) {
+    navigator.geolocation.getCurrentPosition(position => {
+      const { latitude, longitude } = position.coords;
+      coordinatesElement.textContent = `Latitude: ${latitude}, Longitude: ${longitude}`;
+      
+      const map = new google.maps.Map(mapElement, {
+        center: { lat: latitude, lng: longitude },
+        zoom: 15
+      });
+
+      new google.maps.Marker({
+        position: { lat: latitude, lng: longitude },
+        map: map,
+        title: 'You are here'
+      });
+
+      const targetLat = 37.7749; 
+      const targetLng = -122.4194; 
+      const radius = 0.01; 
+
+      if (Math.abs(latitude - targetLat) < radius && Math.abs(longitude - targetLng) < radius) {
+        if ('Notification' in window) {
+          Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+              new Notification('Welcome!', {
+                body: 'You are in the special area!'
+              });
+            }
+          });
+        }
+      }
+    });
+  } else {
+    coordinatesElement.textContent = 'Geolocation is not supported by this browser.';
+  }
+});
+
+const script = document.createElement('script');
+script.src = 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBUwSFnq2qPyHDUXfutudy-ZE7EH5dZjuI';
+document.body.appendChild(script);
+
+
+
+
+
+
+_________________________________________________________________________________________________________________________
+
+
+
+
+
+HTML:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Geolocation and Notifications</title>
+  <style>
+    #map {
+      height: 400px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>Geolocation and Notifications</h1>
+  <div id="map"></div>
+  <p id="coordinates">Getting coordinates..</p>
+  <script src="script.js"></script>
+</body>
+</html>
