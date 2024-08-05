@@ -12,3 +12,18 @@ _______________________________________________________________________________
 
 
 The output of the above code is 20 and the expected output is 120. It is due to missing of recursive call in the else block, in the above code for n = 5, if condition is false, then it comes to else condition and in the else block it is returning n * (n - 1) iwhich is 5*(5-1) = 20. The correct way is to call else block recursively until if condition (base case) is true. So, the correct return statement will be return n*factorial(n-1). In this case the output will be 5! which is equal to 120 (expected output).                    
+
+________________________________________________________________________________
+
+
+function factorial(n) {
+  if (n === 0) {
+    return 1;
+  } else {
+    return n * factorial(n - 1);
+  }
+}
+
+console.log(factorial(5));
+
+
