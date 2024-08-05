@@ -1,0 +1,63 @@
+class ShoppingCart {
+  constructor() {
+    if (ShoppingCart.instance) {
+      return ShoppingCart.instance;
+    }
+    this.items = [];
+    this.observers = [];
+    ShoppingCart.instance = this;
+  }
+
+  addItem(item) {
+    this.items.push(item);
+    this.notifyObservers('Item added', item);
+  }
+
+  removeItem(item) {
+    this.items = this.items.filter(i => i !== item);
+    this.notifyObservers('Item removed', item);
+  }
+
+  addObserver(observer) {
+    this.observers.push(observer);
+  }
+
+  notifyObservers(message, item) {
+    this.observers.forEach(observer => observer.update(message, item));
+  }
+}
+
+class User {
+  constructor(name) {
+    this.name = name;
+  }
+
+  update(message, item) {
+    console.log(`${this.name} received notification`);
+  }
+}
+
+class PaymentMethodFactory {
+  createPaymentMethod(type) {
+    switch (type) {
+      case 'credit':
+        return new CreditCardPayment();
+      case 'xyz':
+        return new XYZPayment();
+      default:
+        throw new Error('Invalid payment method type');
+    }
+  }
+}
+
+
+const cart = new ShoppingCart();
+const user = new User('Suvidha');
+cart.addObserver(user);
+
+cart.addItem('Book');
+cart.removeItem('Book');
+
+const paymentFactory = new PaymentMethodFactory();
+const paymentMethod = paymentFactory.createPaymentMethod('credit');
+paymentMethod.process();
