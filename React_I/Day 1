@@ -1,0 +1,25 @@
+import logo from './logo.svg';
+import './App.css';
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Hello !! This is my Day 1 assignment.
+        </p>
+        <a
+          className="App-link"
+          href="https://skillcaptain.app/fe/goal/31?day=1"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
+  );
+}
+
+export default App;
